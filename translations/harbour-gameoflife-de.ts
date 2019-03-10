@@ -11,15 +11,19 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Reset game</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New game</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random init</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

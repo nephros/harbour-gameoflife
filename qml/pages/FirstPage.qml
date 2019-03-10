@@ -17,9 +17,16 @@ Page {
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
             MenuItem {
-                text: qsTr("Reset game")
+                text: qsTr("New game")
                 onClicked:  {
-                    Game.init()
+                    Game.clear()
+                    canvas.requestPaint()
+                }
+            }
+            MenuItem {
+                text: qsTr("Random init")
+                onClicked:  {
+                    Game.initRandom()
                     canvas.requestPaint()
                 }
             }
@@ -37,7 +44,38 @@ Page {
         Canvas {
             id:canvas
             anchors.fill: parent
-            onPaint: Game.gameDraw(getContext("2d"), width, height)
+            onPaint:  {
+                var ctx = getContext("2d");
+                if(timer.running)
+                    ctx.fillStyle = Qt.rgba(0,0,0,1);
+                else
+                    ctx.fillStyle = Qt.rgba(0.3,0.3,0.3,1);
+
+                ctx.fillRect(0,0, width, height);
+                Game.gameDraw(ctx, width, height)
+            }
+            MouseArea {
+                id:area
+                anchors.fill: parent
+                onClicked: {
+
+                    var ci = Math.round(mouseX / Settings.blockSize);
+                    var cj = Math.round(mouseY / Settings.blockSize);
+
+                    console.log(ci  + " " + cj);
+
+
+                    if (ci >= 0 && ci < Game.maxColumn && cj >= 0 && cj < Game.maxRow) {
+                        Game.changeCell(ci, cj);
+                    }
+                    canvas.requestPaint()
+                }
+            }
+
+            Component.onCompleted: {
+                Game.clear()
+                canvas.requestPaint()
+            }
         }
 
         Timer {
@@ -50,6 +88,17 @@ Page {
                 canvas.requestPaint()
             }
         }
+
+        BusyIndicator {
+           size: BusyIndicatorSize.ExtraSmall
+           anchors.bottom:   parent.bottom
+           anchors.bottomMargin: Theme.paddingMedium
+           x: Theme.paddingMedium
+           running:  timer.running
+        }
+
+
+
 
     }
 }

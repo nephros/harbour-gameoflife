@@ -19,7 +19,13 @@ function index(column, row)
     return column + row * maxColumn;
 }
 
-function init() {
+function clear() {
+    cells = [];
+    for (var i = 0; i < maxIndex; i++) {
+        cells.push(new Cell(false));
+    }
+}
+function initRandom() {
     cells = [];
     for (var i = 0; i < maxIndex; i++) {
         cells.push(new Cell((Math.random() >= 0.8) ? true : false));
@@ -28,8 +34,6 @@ function init() {
 
 function gameDraw(ctx, width, height) {
 
-    ctx.fillStyle = Qt.rgba(0,0,0,1);
-    ctx.fillRect(0,0, width, height);
     ctx.fillStyle = Qt.rgba(1,1,1,1);
 
     if(cells.length == 0)
@@ -47,8 +51,13 @@ function gameDraw(ctx, width, height) {
             }
         }
     }
+}
 
+function changeCell(n, m) {
+    if(cells.length == 0)
+        return;
 
+    cells[index(n,m)].isLive =  !cells[index(n,m)].isLive;
 }
 
 function gameUpdate() {
