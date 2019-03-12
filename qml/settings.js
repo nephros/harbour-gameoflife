@@ -1,5 +1,5 @@
 .pragma library
 
-var FIELDSIZE = 100
-var blockSize = 20
+var FIELDSIZE = 16
+var blockSize = 45  //default.  In page blockSize =  Screen.width / (FIELDSIZE-1)
 

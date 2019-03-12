@@ -3,7 +3,7 @@
 .import "./settings.js" as Settings
 
 var maxColumn = Settings.FIELDSIZE;
-var maxRow = Settings.FIELDSIZE;
+var maxRow = Settings.FIELDSIZE * 2;
 var maxIndex = maxColumn*maxRow;
 
 function Cell(isLive_) {
@@ -47,7 +47,7 @@ function gameDraw(ctx, width, height) {
             if ( cells[index(i,j)].isLive === true ) {
                 var rectX = (i * Settings.blockSize);
                 var rectY = (j * Settings.blockSize);
-                ctx.fillRect(rectX,rectY, Settings.blockSize, Settings.blockSize);
+                ctx.fillRect(rectX -Settings.blockSize ,rectY-Settings.blockSize, Settings.blockSize, Settings.blockSize);
             }
         }
     }
@@ -89,6 +89,16 @@ function gameUpdate() {
             else if (counter > 3 || counter < 2)
                 cells[index(i,j)].mustdie = true;
 
+
+
+        }
+    }
+
+    //correct in edges fix
+    for ( i = 0; i < maxColumn; i++) {
+        for ( j = 0; j < maxRow; j++) {
+            if(i === 0 || j === 0 || i===maxColumn-1 || j===maxRow-1)
+               cells[index(i,j)].mustdie = true;
         }
     }
 

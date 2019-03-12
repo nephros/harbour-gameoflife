@@ -7,6 +7,12 @@ import "../gameoflife.js" as Game
 Page {
     id: page
 
+
+    Component.onCompleted: {
+        Settings.blockSize = Screen.width / (Settings.FIELDSIZE-1)
+
+    }
+
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
@@ -15,37 +21,57 @@ Page {
         anchors.fill: parent
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("New game")
+
+
+        Grid  {
+            id: gridButtons
+            width: parent.width
+            columns: 2
+            spacing: 2
+            z: canvas.z+1
+            Button {
+                width: parent.width/2 -1
+
+                text: qsTr("Clear")
                 onClicked:  {
                     Game.clear()
                     canvas.requestPaint()
                 }
             }
-            MenuItem {
+            Button {
+                width: parent.width/2 -1
                 text: qsTr("Random init")
                 onClicked:  {
                     Game.initRandom()
                     canvas.requestPaint()
                 }
             }
-            MenuItem {
+            Button {
+                width: parent.width/2 -1
                 text: qsTr("Start")
                 onClicked: timer.start()
             }
-            MenuItem {
-                text: qsTr("Stop")
-                onClicked: timer.stop()
+            Button {
+                width: parent.width/2 -1
+                text: qsTr("Stop and Edit")
+                onClicked: {
+                    timer.stop();
+                    canvas.requestPaint();
+                }
             }
 
         }
 
+
         Canvas {
             id:canvas
-            anchors.fill: parent
+            anchors.top: gridButtons.bottom
+            anchors.bottom: parent.bottom
+
+            width: parent.width
             onPaint:  {
                 var ctx = getContext("2d");
+
                 if(timer.running)
                     ctx.fillStyle = Qt.rgba(0,0,0,1);
                 else
@@ -59,8 +85,8 @@ Page {
                 anchors.fill: parent
                 onClicked: {
 
-                    var ci = Math.round(mouseX / Settings.blockSize);
-                    var cj = Math.round(mouseY / Settings.blockSize);
+                    var ci = Math.floor(mouseX / Settings.blockSize) + 1;
+                    var cj = Math.floor(mouseY / Settings.blockSize) + 1;
 
                     console.log(ci  + " " + cj);
 
@@ -90,11 +116,11 @@ Page {
         }
 
         BusyIndicator {
-           size: BusyIndicatorSize.ExtraSmall
-           anchors.bottom:   parent.bottom
-           anchors.bottomMargin: Theme.paddingMedium
-           x: Theme.paddingMedium
-           running:  timer.running
+            size: BusyIndicatorSize.Medium
+            anchors.bottom:   parent.bottom
+            anchors.bottomMargin: Theme.paddingMedium
+            x: Theme.paddingMedium
+            running:  timer.running
         }
 
 
