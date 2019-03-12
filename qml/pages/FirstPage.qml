@@ -9,7 +9,9 @@ Page {
 
 
     Component.onCompleted: {
-        Settings.blockSize = Screen.width / (Settings.FIELDSIZE-1)
+        Settings.FIELDSIZE = 14 - Settings.cellOffset*2
+        Game.reInitArea()
+        Settings.blockSize = Screen.width / (Settings.FIELDSIZE + Settings.cellOffset*2 )
 
     }
 
@@ -85,8 +87,8 @@ Page {
                 anchors.fill: parent
                 onClicked: {
 
-                    var ci = Math.floor(mouseX / Settings.blockSize) + 1;
-                    var cj = Math.floor(mouseY / Settings.blockSize) + 1;
+                    var ci = Math.floor(mouseX / Settings.blockSize) - Settings.cellOffset;
+                    var cj = Math.floor(mouseY / Settings.blockSize) - Settings.cellOffset;
 
                     console.log(ci  + " " + cj);
 

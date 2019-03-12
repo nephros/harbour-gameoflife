@@ -2,9 +2,21 @@
 .pragma library
 .import "./settings.js" as Settings
 
-var maxColumn = Settings.FIELDSIZE;
-var maxRow = Settings.FIELDSIZE * 2;
-var maxIndex = maxColumn*maxRow;
+
+var maxColumn   = 1000;
+var maxRow      = 1000;
+var maxIndex    = maxColumn*maxRow;
+
+function reInitArea() {
+    maxColumn = Settings.FIELDSIZE;
+    maxRow = Settings.FIELDSIZE * 2;
+    maxIndex = maxColumn*maxRow;
+    Inited = true
+}
+
+
+
+var  Inited = false
 
 function Cell(isLive_) {
     this.isLive = isLive_;
@@ -35,7 +47,8 @@ function initRandom() {
 function gameDraw(ctx, width, height) {
 
     ctx.fillStyle = Qt.rgba(1,1,1,1);
-
+    if(!Inited)
+        return;
     if(cells.length == 0)
         return;
     var i, j;
@@ -45,15 +58,19 @@ function gameDraw(ctx, width, height) {
             var cell = new Cell();
 
             if ( cells[index(i,j)].isLive === true ) {
-                var rectX = (i * Settings.blockSize);
-                var rectY = (j * Settings.blockSize);
-                ctx.fillRect(rectX -Settings.blockSize ,rectY-Settings.blockSize, Settings.blockSize, Settings.blockSize);
+                var rectX = ((i+Settings.cellOffset) * Settings.blockSize);
+                var rectY = ((j+Settings.cellOffset) * Settings.blockSize);
+                ctx.fillRect(rectX ,rectY, Settings.blockSize, Settings.blockSize);
             }
         }
     }
 }
 
 function changeCell(n, m) {
+
+    if(!Inited)
+        return;
+
     if(cells.length == 0)
         return;
 
@@ -61,6 +78,9 @@ function changeCell(n, m) {
 }
 
 function gameUpdate() {
+    if(!Inited)
+        return;
+
     var i, j;
 
     for ( i = 0; i < maxColumn; i++) {
@@ -97,8 +117,10 @@ function gameUpdate() {
     //correct in edges fix
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
-            if(i === 0 || j === 0 || i===maxColumn-1 || j===maxRow-1)
+            if(i === 0 || j === 0 || i===maxColumn-1 || j===maxRow-1) {
                cells[index(i,j)].mustdie = true;
+               cells[index(i,j)].mustbirth = false;
+            }
         }
     }
 
