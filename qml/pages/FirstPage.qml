@@ -8,10 +8,8 @@ Page {
     id: page
 
 
-
-
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
-    allowedOrientations: Orientation.All
+    allowedOrientations: Orientation.Portrait
 
     // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaFlickable {
@@ -25,13 +23,13 @@ Page {
             id: gridButtons
             width: parent.width
             height: butClear.height * 2
-            columns: 2
+            columns: 3
             spacing: 2
             z: canvas.z+1
 
             Button {
                 id: butClear
-                width: parent.width/2 -1
+                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
                 text: qsTr("Clear")
                 onClicked:  {
                     if(Game.Inited) {
@@ -41,17 +39,18 @@ Page {
                 }
             }
             Button {
-                width: parent.width/2 -1
+                width: (parent.width/gridButtons.columns) - gridButtons.spacing
                 text: qsTr("Random init")
                 onClicked:  {
                     if(Game.Inited) {
+                        Game.clear()
                         Game.initRandom()
                         canvas.requestPaint()
-                     }
+                    }
                 }
             }
             Button {
-                width: parent.width/2 -1
+                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
                 text: qsTr("Start")
                 onClicked: {
                     if(Game.Inited)
@@ -59,8 +58,8 @@ Page {
                 }
             }
             Button {
-                id: lastBut
-                width: parent.width/2 -1
+                id: butStop
+                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
                 text: qsTr("Stop and Edit")
                 onClicked: {
                     if(Game.Inited) {
@@ -69,7 +68,31 @@ Page {
                     }
                 }
             }
+            Button {
+                id: butSpeedDown
+                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
+                text: qsTr("Speed -")
+                onClicked: {
+                    if(Game.Inited) {
+                        timer.interval *=2;
+                        if(timer.interval > 3000)
+                            timer.interval = 3000;
+                    }
+                }
+            }
+            Button {
+                id: butSpeedUp
+                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
+                text: qsTr("Speed +")
+                onClicked: {
+                    if(Game.Inited) {
+                        timer.interval /=2;
+                        if(timer.interval < 10)
+                            timer.interval = 10;
 
+                    }
+                }
+            }
         }
 
 

@@ -26,6 +26,14 @@
         <source>Stop and Edit</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Speed -</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed +</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SecondPage</name>

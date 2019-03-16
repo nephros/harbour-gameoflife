@@ -47,6 +47,8 @@ function clear() {
 }
 function initRandom() {
     for (var i = 0; i < maxIndex; i++) {
+        cells[i].mustdie = false;
+        cells[i].mustbirth = false;
         cells[i].isLive = (Math.random() >= 0.8) ? true : false;
     }
 }
@@ -85,7 +87,7 @@ function downOf(j) {
 function gameDraw(ctx, width, height) {
 
 
-    ctx.fillStyle = Qt.rgba(1,1,1,1);
+
 
     if(!Inited)
         return;
@@ -95,13 +97,23 @@ function gameDraw(ctx, width, height) {
     var i, j;
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
+            var rectX = (i * blockSize);
+            var rectY = (j * blockSize);
+
+            // ctx.fillStyle = Qt.rgba(0,0,0,1);
 
             if(cells[index(i,j)] instanceof Cell) {
                 if ( cells[index(i,j)].isLive === true ) {
-                    var rectX = (i * blockSize);
-                    var rectY = (j * blockSize);
+                    ctx.fillStyle = cells[index(i,j)].mustdie ? Qt.rgba(1,0.5,0.5,1) : Qt.rgba(1,1,1,1) ;
                     ctx.fillRect(rectX ,rectY, blockSize, blockSize);
+
                 }
+                else if ( cells[index(i,j)].mustbirth === true ) {
+                    ctx.fillStyle = Qt.rgba(0,0.5,0,1);
+                    ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
+                }
+
+
             }
         }
     }
@@ -116,6 +128,12 @@ function changeCell(n, m) {
         return;
 
     cells[index(n,m)].isLive =  !cells[index(n,m)].isLive;
+
+    if(!!cells[index(n,m)].isLive) {
+        cells[index(n,m)].mustdie = false
+    }
+
+
 }
 
 function gameUpdate() {
@@ -123,36 +141,6 @@ function gameUpdate() {
         return;
 
     var i, j;
-
-    for ( i = 0; i < maxColumn; i++) {
-        for ( j = 0; j < maxRow; j++) {
-            cells[index(i,j)].mustdie = false;
-            cells[index(i,j)].mustbirth = false;
-        }
-    }
-
-    for ( i =0; i < maxColumn; i++) {
-        for ( j = 0; j < maxRow; j++) {
-            var counter = 0;
-
-            if ( cells[index(i, upOf(j))            ].isLive === true   ) counter ++;
-            if ( cells[index(i, downOf(j))          ].isLive === true   ) counter ++;
-            if ( cells[index(rightOf(i), j)         ].isLive === true   ) counter ++;
-            if ( cells[index(leftOf(i), j)          ].isLive === true   ) counter ++;
-            if ( cells[index(leftOf(i), upOf(j))    ].isLive === true   ) counter ++;
-            if ( cells[index(leftOf(i), downOf(j))  ].isLive === true   ) counter ++;
-            if ( cells[index(rightOf(i), upOf(j))   ].isLive === true   ) counter ++;
-            if ( cells[index(rightOf(i), downOf(j)) ].isLive === true   ) counter ++;
-
-
-            if (counter == 3)
-                cells[index(i,j)].mustbirth = true;
-            else if (counter > 3 || counter < 2)
-                cells[index(i,j)].mustdie = true;
-
-
-        }
-    }
 
 
 
@@ -169,4 +157,37 @@ function gameUpdate() {
             }
         }
     }
+
+
+    for (  i = 0; i < maxIndex; i++) {
+        if(cells[i] instanceof Cell) {
+            cells[i].mustdie = false;
+            cells[i].mustbirth = false;
+        }
+    }
+
+    for ( i =0; i < maxColumn; i++) {
+        for ( j = 0; j < maxRow; j++) {
+            var counter = 0;
+
+            if ( cells[index(i,             upOf(j))    ].isLive === true   ) counter ++;
+            if ( cells[index(i,             downOf(j))  ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i),    j)          ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i),     j)          ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i),     upOf(j))    ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i),     downOf(j))  ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i),    upOf(j))    ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i),    downOf(j))  ].isLive === true   ) counter ++;
+
+            if (counter == 3)
+                cells[index(i,j)].mustbirth = true;
+            else if (counter > 3 || counter < 2)
+                cells[index(i,j)].mustdie = true;
+
+
+        }
+    }
+
+
+
 }
