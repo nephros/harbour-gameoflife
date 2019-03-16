@@ -5,18 +5,24 @@
 
 var maxColumn   = 1000;
 var maxRow      = 1000;
-var maxIndex    = maxColumn*maxRow;
+var maxIndex    = 1000000;
+var blockSize   = 40
+var Inited = false
+var cells = [];
 
-function reInitArea() {
-    maxColumn = Settings.FIELDSIZE;
-    maxRow = Settings.FIELDSIZE * 2;
+
+function reInitArea(areaWidth, areaHeight) {
+    maxColumn = Math.floor(areaWidth / blockSize);
+    maxRow =   Math.floor(areaHeight / blockSize);
     maxIndex = maxColumn*maxRow;
+
+    cells = [];
+    for (var i = 0; i < maxIndex; i++) {
+        cells.push(new Cell(false));
+    }
+
     Inited = true
 }
-
-
-
-var  Inited = false
 
 function Cell(isLive_) {
     this.isLive = isLive_;
@@ -24,7 +30,6 @@ function Cell(isLive_) {
     this.mustbirth = false;
 }
 
-var cells = [];
 
 function index(column, row)
 {
@@ -32,35 +37,71 @@ function index(column, row)
 }
 
 function clear() {
-    cells = [];
     for (var i = 0; i < maxIndex; i++) {
-        cells.push(new Cell(false));
+        if(cells[i] instanceof Cell) {
+            cells[i].isLive = false
+            cells[i].mustdie = false;
+            cells[i].mustbirth = false;
+        }
     }
 }
 function initRandom() {
-    cells = [];
     for (var i = 0; i < maxIndex; i++) {
-        cells.push(new Cell((Math.random() >= 0.8) ? true : false));
+        cells[i].isLive = (Math.random() >= 0.8) ? true : false;
     }
 }
 
+function leftOf(i) {
+    var n = i-1;
+    if(n < 0)
+        return maxColumn-1;
+
+    return n;
+}
+
+function rightOf(i) {
+    var n = i+1;
+    if(n >= maxColumn)
+        return 0;
+    return n;
+}
+
+function upOf(j) {
+    var n = j-1;
+    if(n < 0)
+        return maxRow-1;
+
+    return n;
+}
+
+function downOf(j) {
+    var n = j+1;
+    if(n >= maxRow)
+        return 0;
+    return n;
+}
+
+
 function gameDraw(ctx, width, height) {
 
+
     ctx.fillStyle = Qt.rgba(1,1,1,1);
+
     if(!Inited)
         return;
     if(cells.length == 0)
         return;
-    var i, j;
 
+    var i, j;
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
-            var cell = new Cell();
 
-            if ( cells[index(i,j)].isLive === true ) {
-                var rectX = ((i+Settings.cellOffset) * Settings.blockSize);
-                var rectY = ((j+Settings.cellOffset) * Settings.blockSize);
-                ctx.fillRect(rectX ,rectY, Settings.blockSize, Settings.blockSize);
+            if(cells[index(i,j)] instanceof Cell) {
+                if ( cells[index(i,j)].isLive === true ) {
+                    var rectX = (i * blockSize);
+                    var rectY = (j * blockSize);
+                    ctx.fillRect(rectX ,rectY, blockSize, blockSize);
+                }
             }
         }
     }
@@ -90,19 +131,19 @@ function gameUpdate() {
         }
     }
 
-    for ( i = 1; i < maxColumn-1; i++) {
-        for ( j = 1; j < maxRow-1; j++) {
+    for ( i =0; i < maxColumn; i++) {
+        for ( j = 0; j < maxRow; j++) {
             var counter = 0;
-            for (var di = -1; di <= 1; di++) {
-                for (var dj = -1; dj <= 1; dj++) {
-                    if (di == 0 && dj == 0)
-                        continue;
 
-                    if (cells[index(i + di, j + dj)].isLive !== undefined && cells[index(i + di, j + dj)].isLive === true) {
-                        counter++;
-                    }
-                }
-            }
+            if ( cells[index(i, upOf(j))            ].isLive === true   ) counter ++;
+            if ( cells[index(i, downOf(j))          ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i), j)         ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i), j)          ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i), upOf(j))    ].isLive === true   ) counter ++;
+            if ( cells[index(leftOf(i), downOf(j))  ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i), upOf(j))   ].isLive === true   ) counter ++;
+            if ( cells[index(rightOf(i), downOf(j)) ].isLive === true   ) counter ++;
+
 
             if (counter == 3)
                 cells[index(i,j)].mustbirth = true;
@@ -110,19 +151,10 @@ function gameUpdate() {
                 cells[index(i,j)].mustdie = true;
 
 
-
         }
     }
 
-    //correct in edges fix
-    for ( i = 0; i < maxColumn; i++) {
-        for ( j = 0; j < maxRow; j++) {
-            if(i === 0 || j === 0 || i===maxColumn-1 || j===maxRow-1) {
-               cells[index(i,j)].mustdie = true;
-               cells[index(i,j)].mustbirth = false;
-            }
-        }
-    }
+
 
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {

@@ -8,12 +8,7 @@ Page {
     id: page
 
 
-    Component.onCompleted: {
-        Settings.FIELDSIZE = 14 - Settings.cellOffset*2
-        Game.reInitArea()
-        Settings.blockSize = Screen.width / (Settings.FIELDSIZE + Settings.cellOffset*2 )
 
-    }
 
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
@@ -25,52 +20,67 @@ Page {
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
 
 
+
         Grid  {
             id: gridButtons
             width: parent.width
+            height: butClear.height * 2
             columns: 2
             spacing: 2
             z: canvas.z+1
-            Button {
-                width: parent.width/2 -1
 
+            Button {
+                id: butClear
+                width: parent.width/2 -1
                 text: qsTr("Clear")
                 onClicked:  {
-                    Game.clear()
-                    canvas.requestPaint()
+                    if(Game.Inited) {
+                        Game.clear()
+                        canvas.requestPaint()
+                    }
                 }
             }
             Button {
                 width: parent.width/2 -1
                 text: qsTr("Random init")
                 onClicked:  {
-                    Game.initRandom()
-                    canvas.requestPaint()
+                    if(Game.Inited) {
+                        Game.initRandom()
+                        canvas.requestPaint()
+                     }
                 }
             }
             Button {
                 width: parent.width/2 -1
                 text: qsTr("Start")
-                onClicked: timer.start()
+                onClicked: {
+                    if(Game.Inited)
+                        timer.start()
+                }
             }
             Button {
+                id: lastBut
                 width: parent.width/2 -1
                 text: qsTr("Stop and Edit")
                 onClicked: {
-                    timer.stop();
-                    canvas.requestPaint();
+                    if(Game.Inited) {
+                        timer.stop();
+                        canvas.requestPaint();
+                    }
                 }
             }
 
         }
 
 
+
+
         Canvas {
             id:canvas
-            anchors.top: gridButtons.bottom
-            anchors.bottom: parent.bottom
-
+            y:  gridButtons.height + gridButtons.spacing
+            height: parent.height - gridButtons.height - gridButtons.spacing
             width: parent.width
+
             onPaint:  {
                 var ctx = getContext("2d");
 
@@ -80,15 +90,18 @@ Page {
                     ctx.fillStyle = Qt.rgba(0.3,0.3,0.3,1);
 
                 ctx.fillRect(0,0, width, height);
-                Game.gameDraw(ctx, width, height)
+
+                if(Game.Inited) {
+                    Game.gameDraw(ctx, width, height)
+                }
             }
             MouseArea {
                 id:area
                 anchors.fill: parent
                 onClicked: {
 
-                    var ci = Math.floor(mouseX / Settings.blockSize) - Settings.cellOffset;
-                    var cj = Math.floor(mouseY / Settings.blockSize) - Settings.cellOffset;
+                    var ci = Math.floor(mouseX / Game.blockSize);
+                    var cj = Math.floor(mouseY / Game.blockSize);
 
                     console.log(ci  + " " + cj);
 
@@ -101,16 +114,18 @@ Page {
             }
 
             Component.onCompleted: {
-                Game.clear()
                 canvas.requestPaint()
+                Game.reInitArea( width, height )
             }
+
+
         }
 
         Timer {
             id:timer
             repeat: true
             running: false
-            interval: 250
+            interval:  50
             onTriggered: {
                 Game.gameUpdate()
                 canvas.requestPaint()
