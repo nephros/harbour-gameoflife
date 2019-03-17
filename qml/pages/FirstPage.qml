@@ -75,8 +75,8 @@ Page {
                 onClicked: {
                     if(Game.Inited) {
                         timer.interval *=2;
-                        if(timer.interval > 3000)
-                            timer.interval = 3000;
+                        if(timer.interval > 4000)
+                            timer.interval = 4000;
                     }
                 }
             }
@@ -148,7 +148,7 @@ Page {
             id:timer
             repeat: true
             running: false
-            interval:  50
+            interval:  200
             onTriggered: {
                 Game.gameUpdate()
                 canvas.requestPaint()

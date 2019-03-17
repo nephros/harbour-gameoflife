@@ -1,3 +1,3 @@
 .pragma library
 
-var speed = 1
+var someParam = 200

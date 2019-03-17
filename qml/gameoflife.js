@@ -86,9 +86,6 @@ function downOf(j) {
 
 function gameDraw(ctx, width, height) {
 
-
-
-
     if(!Inited)
         return;
     if(cells.length == 0)
@@ -99,17 +96,20 @@ function gameDraw(ctx, width, height) {
         for ( j = 0; j < maxRow; j++) {
             var rectX = (i * blockSize);
             var rectY = (j * blockSize);
+            var n = index (i,j)
 
-            // ctx.fillStyle = Qt.rgba(0,0,0,1);
-
-            if(cells[index(i,j)] instanceof Cell) {
-                if ( cells[index(i,j)].isLive === true ) {
-                    ctx.fillStyle = cells[index(i,j)].mustdie ? Qt.rgba(1,0.5,0.5,1) : Qt.rgba(1,1,1,1) ;
+            if(cells[n] instanceof Cell) {
+                if ( cells[n].isLive === true ) {
+                    ctx.fillStyle =  Qt.rgba(1,1,1,1) ;
                     ctx.fillRect(rectX ,rectY, blockSize, blockSize);
+                    if(cells[n].mustdie) {
+                       ctx.fillStyle = Qt.rgba(1,0,0,0.25);
+                       ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
+                    }
 
                 }
-                else if ( cells[index(i,j)].mustbirth === true ) {
-                    ctx.fillStyle = Qt.rgba(0,0.5,0,1);
+                else if ( cells[n].mustbirth === true ) {
+                    ctx.fillStyle = Qt.rgba(0,1,0,0.25);
                     ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
                 }
 
@@ -140,20 +140,21 @@ function gameUpdate() {
     if(!Inited)
         return;
 
-    var i, j;
+    var i, j, n;
 
 
 
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
-            if (cells[index(i,j)].mustdie && cells[index(i,j)].isLive ) {
-                cells[index(i,j)].isLive = false;
-                cells[index(i,j)].mustdie = false;
+            n = index(i,j);
+            if (cells[n].mustdie && cells[index(i,j)].isLive ) {
+                cells[n].isLive = false;
+                cells[n].mustdie = false;
 
             }
-            if (cells[index(i,j)].mustbirth && !cells[index(i,j)].isLive) {
-                cells[index(i,j)].isLive = true;
-                cells[index(i,j)].mustbirth = false;
+            if (cells[n].mustbirth && !cells[index(i,j)].isLive) {
+                cells[n].isLive = true;
+                cells[n].mustbirth = false;
             }
         }
     }
@@ -179,10 +180,11 @@ function gameUpdate() {
             if ( cells[index(rightOf(i),    upOf(j))    ].isLive === true   ) counter ++;
             if ( cells[index(rightOf(i),    downOf(j))  ].isLive === true   ) counter ++;
 
+            n = index(i,j);
             if (counter == 3)
-                cells[index(i,j)].mustbirth = true;
+                cells[n].mustbirth = true;
             else if (counter > 3 || counter < 2)
-                cells[index(i,j)].mustdie = true;
+                cells[n].mustdie = true;
 
 
         }
