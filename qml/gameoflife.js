@@ -2,32 +2,80 @@
 .pragma library
 .import "./settings.js" as Settings
 
-
-var maxColumn   = 1000;
-var maxRow      = 1000;
-var maxIndex    = 1000000;
 var blockSize   = 40
 var Inited = false
+
+
+var maxColumn   = 10;
+var maxRow      = 10;
+var maxIndex    = 100;
+
+var old_maxColumn   = 10;
+var old_maxRow      = 10;
+var old_maxIndex    = 100;
+
 var cells = [];
+var buf = [];
 
 
-function reInitArea(areaWidth, areaHeight) {
-    maxColumn = Math.floor(areaWidth / blockSize);
-    maxRow =   Math.floor(areaHeight / blockSize);
-    maxIndex = maxColumn*maxRow;
-
-    cells = [];
-    for (var i = 0; i < maxIndex; i++) {
-        cells.push(new Cell(false));
-    }
-
-    Inited = true
-}
-
-function Cell(isLive_) {
-    this.isLive = isLive_;
+function Cell(i_, j_) {
+    this.isLive = false;
     this.mustdie = false;
     this.mustbirth = false;
+    this.i = i_;
+    this.j = j_;
+}
+
+function createCells() {
+
+    cells = [];
+    for (var i = 0; i < 100; i++) {
+        for (var j = 0; j < 100; j++) {
+            cells.push(new Cell(i,j));
+        }
+    }
+
+
+}
+
+function reInitArea(areaWidth, areaHeight) {
+
+    if(Inited) {
+        buf = new Array(maxColumn)
+        for (var i = 0; i < maxColumn; i++) {
+            buf[i] = new Array(maxRow)
+            for (var j = 0; j < maxRow; j++) {
+                buf[i][j] = cells[index(i,j)].isLive;
+            }
+        }
+    }
+
+    maxColumn   =   Math.floor(areaWidth / blockSize);
+    maxRow      =   Math.floor(areaHeight / blockSize);
+    maxIndex    =   maxColumn*maxRow;
+
+    if(Inited && buf.length > 0) {
+        for (var i = 0; i < maxColumn; i++) {
+            for (var j = 0; j < maxRow; j++) {
+                cells[index(i,j)].isLive = false
+            }
+        }
+
+        for (var i = 0; i < maxColumn; i++) {
+            for (var j = 0; j < maxRow; j++) {
+                if(i < old_maxColumn && j < old_maxRow )
+                    cells[index(i,j)].isLive = buf[i][j];
+            }
+        }
+    }
+
+
+
+    old_maxColumn = maxColumn;
+    old_maxRow = maxRow;
+    old_maxIndex = maxIndex;
+
+    Inited = true
 }
 
 
@@ -35,6 +83,12 @@ function index(column, row)
 {
     return column + row * maxColumn;
 }
+
+function old_index(column, row)
+{
+    return column + row * old_maxColumn;
+}
+
 
 function clear() {
     for (var i = 0; i < maxIndex; i++) {
@@ -103,9 +157,10 @@ function gameDraw(ctx, width, height) {
                     ctx.fillStyle =  Qt.rgba(1,1,1,1) ;
                     ctx.fillRect(rectX ,rectY, blockSize, blockSize);
                     if(cells[n].mustdie) {
-                       ctx.fillStyle = Qt.rgba(1,0,0,0.25);
-                       ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
+                        ctx.fillStyle = Qt.rgba(1,0.5,0.5,1);
+                        ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
                     }
+
 
                 }
                 else if ( cells[n].mustbirth === true ) {

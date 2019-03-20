@@ -8,6 +8,13 @@ Page {
     id: page
 
 
+    function sv() {
+        var text = "1111111111111";
+        var filename = "textfile";
+        var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, filename+".txt");
+    }
+
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.Portrait
 
@@ -23,76 +30,130 @@ Page {
             id: gridButtons
             width: parent.width
             height: butClear.height * 2
-            columns: 3
+            columns: 4
             spacing: 2
             z: canvas.z+1
 
-            Button {
-                id: butClear
-                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Clear")
-                onClicked:  {
-                    if(Game.Inited) {
-                        Game.clear()
-                        canvas.requestPaint()
-                    }
-                }
-            }
-            Button {
+            Column {
                 width: (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Random init")
-                onClicked:  {
-                    if(Game.Inited) {
-                        Game.clear()
-                        Game.initRandom()
-                        canvas.requestPaint()
+                height: butClear.height * 2
+                spacing: 2
+                Button {
+                    id: butClear
+                    width:  parent.width
+                    text: qsTr("Clear")
+                    onClicked:  {
+                        if(Game.Inited) {
+                            Game.clear()
+                            canvas.requestPaint()
+                        }
+                    }
+                }
+                Button {
+                    width:  parent.width
+                    text: qsTr("Random")
+                    onClicked:  {
+                        if(Game.Inited) {
+                            Game.clear()
+                            Game.initRandom()
+                            canvas.requestPaint()
+                        }
                     }
                 }
             }
-            Button {
-                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Start")
-                onClicked: {
-                    if(Game.Inited)
-                        timer.start()
+            Column {
+                width: (parent.width/gridButtons.columns) - gridButtons.spacing
+                height: butClear.height * 2
+                spacing: 2
+                Button {
+                    width:   parent.width
+                    text: qsTr("Start")
+                    onClicked: {
+                        if(Game.Inited)
+                            timer.start()
+                    }
                 }
-            }
-            Button {
-                id: butStop
-                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Stop and Edit")
-                onClicked: {
-                    if(Game.Inited) {
-                        timer.stop();
-                        canvas.requestPaint();
+                Button {
+                    id: butStop
+                    width:  parent.width
+                    text: qsTr("Stop/Edit")
+                    onClicked: {
+                        if(Game.Inited) {
+                            timer.stop();
+                            canvas.requestPaint();
+                        }
                     }
                 }
             }
-            Button {
-                id: butSpeedDown
-                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Speed -")
-                onClicked: {
-                    if(Game.Inited) {
-                        timer.interval *=2;
-                        if(timer.interval > 4000)
-                            timer.interval = 4000;
-                    }
-                }
-            }
-            Button {
-                id: butSpeedUp
-                width:  (parent.width/gridButtons.columns) - gridButtons.spacing
-                text: qsTr("Speed +")
-                onClicked: {
-                    if(Game.Inited) {
-                        timer.interval /=2;
-                        if(timer.interval < 10)
-                            timer.interval = 10;
 
+            Column {
+                width: (parent.width/gridButtons.columns) - gridButtons.spacing
+                height: butClear.height * 2
+                spacing: 2
+                Button {
+                    id: butSpeedUp
+                    width:  parent.width
+                    text: qsTr("Speed +")
+                    onClicked: {
+                        if(Game.Inited) {
+                            timer.interval /=2;
+                            if(timer.interval < 10)
+                                timer.interval = 10;
+
+                        }
+                    }
+                }
+                Button {
+                    id: butSpeedDown
+                    width:   parent.width
+                    text: qsTr("Speed -")
+                    onClicked: {
+                        if(Game.Inited) {
+                            timer.interval *=2;
+                            if(timer.interval > 4000)
+                                timer.interval = 4000;
+                        }
+                    }
+                }
+
+            }
+
+            Column {
+                width: (parent.width/gridButtons.columns) - gridButtons.spacing
+                height: butClear.height * 2
+                spacing: 2
+                Button {
+                    id: butAreaUp
+                    width:   parent.width
+                    text: qsTr("Area +")
+                    onClicked: {
+                        //  if(Game.Inited) {
+                        Game.blockSize /= 1.5
+                        if(Game.blockSize < 10)
+                            Game.blockSize = 10;
+
+                        Game.reInitArea( canvas.width, canvas.height )
+                        canvas.requestPaint()
+                        //  }
+                    }
+                }
+                Button {
+                    id: butAreaDown
+                    width:  parent.width
+                    text: qsTr("Area -")
+                    onClicked: {
+                        // if(Game.Inited) {
+                        Game.blockSize *= 1.5
+                        if(Game.blockSize > 50)
+                            Game.blockSize = 50;
+
+                        Game.reInitArea( canvas.width, canvas.height )
+                        canvas.requestPaint()
+                        //  }
                     }
                 }
             }
+
         }
 
 
@@ -100,7 +161,7 @@ Page {
 
         Canvas {
             id:canvas
-            y:  gridButtons.height + gridButtons.spacing
+            y:  gridButtons.height + gridButtons.spacing * 2
             height: parent.height - gridButtons.height - gridButtons.spacing
             width: parent.width
 
@@ -138,6 +199,7 @@ Page {
 
             Component.onCompleted: {
                 canvas.requestPaint()
+                Game.createCells()
                 Game.reInitArea( width, height )
             }
 

@@ -15,15 +15,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Random init</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stop and Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -32,6 +24,22 @@
     </message>
     <message>
         <source>Speed +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop/Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area -</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
