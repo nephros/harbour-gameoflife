@@ -3,7 +3,7 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=harbour-gameoflife
 Exec=harbour-gameoflife
-Name=harbour-gameoflife
+Name=Game of Life
 # translation example:
 # your app name in German locale (de)
 #

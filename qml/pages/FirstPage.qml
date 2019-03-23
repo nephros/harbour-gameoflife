@@ -127,14 +127,12 @@ Page {
                     width:   parent.width
                     text: qsTr("Area +")
                     onClicked: {
-                        //  if(Game.Inited) {
                         Game.blockSize /= 1.5
                         if(Game.blockSize < 10)
                             Game.blockSize = 10;
 
                         Game.reInitArea( canvas.width, canvas.height )
                         canvas.requestPaint()
-                        //  }
                     }
                 }
                 Button {
@@ -142,14 +140,12 @@ Page {
                     width:  parent.width
                     text: qsTr("Area -")
                     onClicked: {
-                        // if(Game.Inited) {
                         Game.blockSize *= 1.5
                         if(Game.blockSize > 50)
                             Game.blockSize = 50;
 
                         Game.reInitArea( canvas.width, canvas.height )
                         canvas.requestPaint()
-                        //  }
                     }
                 }
             }
@@ -167,11 +163,12 @@ Page {
 
             onPaint:  {
                 var ctx = getContext("2d");
+                ctx.reset();
 
                 if(timer.running)
-                    ctx.fillStyle = Qt.rgba(0,0,0,1);
+                    ctx.fillStyle = Qt.rgba(0,0,0,0.5);
                 else
-                    ctx.fillStyle = Qt.rgba(0.3,0.3,0.3,1);
+                    ctx.fillStyle = Qt.rgba(0.5,0.5,0.5,1);
 
                 ctx.fillRect(0,0, width, height);
 

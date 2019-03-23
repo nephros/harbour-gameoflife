@@ -17,6 +17,10 @@ var old_maxIndex    = 100;
 var cells = [];
 var buf = [];
 
+var generationsCounter = 0
+var birthsCounter = 0
+var deathsCounter = 0
+var population = 0
 
 function Cell(i_, j_) {
     this.isLive = false;
@@ -93,11 +97,15 @@ function old_index(column, row)
 function clear() {
     for (var i = 0; i < maxIndex; i++) {
         if(cells[i] instanceof Cell) {
-            cells[i].isLive = false
+            cells[i].isLive = false;
             cells[i].mustdie = false;
             cells[i].mustbirth = false;
         }
     }
+    generationsCounter = 0;
+    birthsCounter = 0;
+    deathsCounter = 0;
+    population = 0;
 }
 function initRandom() {
     for (var i = 0; i < maxIndex; i++) {
@@ -155,7 +163,7 @@ function gameDraw(ctx, width, height) {
             if(cells[n] instanceof Cell) {
                 if ( cells[n].isLive === true ) {
                     ctx.fillStyle =  Qt.rgba(1,1,1,1) ;
-                    ctx.fillRect(rectX ,rectY, blockSize, blockSize);
+                    ctx.fillRect(rectX ,rectY, blockSize-1, blockSize-1);
                     if(cells[n].mustdie) {
                         ctx.fillStyle = Qt.rgba(1,0.5,0.5,1);
                         ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
@@ -172,6 +180,20 @@ function gameDraw(ctx, width, height) {
             }
         }
     }
+
+
+    ctx.font = "bold 20px sans-serif";
+
+    ctx.fillStyle = "#fff";
+    ctx.fillText("generation: ", 10, 20);    ctx.fillText("" + generationsCounter, 180, 20);
+    ctx.fillText("population: ", 10, 40);    ctx.fillText("" + population, 180, 40);
+
+
+    ctx.fillStyle = "#00ff00";
+    ctx.fillText("births count: ", width - 290, 20);      ctx.fillText("" + birthsCounter, width - 100, 20);
+    ctx.fillStyle = "#ff0000";
+    ctx.fillText("deaths count: ", width - 290, 40);      ctx.fillText("" + deathsCounter, width - 100, 40);
+
 }
 
 function changeCell(n, m) {
@@ -197,7 +219,7 @@ function gameUpdate() {
 
     var i, j, n;
 
-
+    var wasSomeoneBirth = false;
 
     for ( i = 0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
@@ -205,11 +227,14 @@ function gameUpdate() {
             if (cells[n].mustdie && cells[index(i,j)].isLive ) {
                 cells[n].isLive = false;
                 cells[n].mustdie = false;
+                deathsCounter ++;
 
             }
             if (cells[n].mustbirth && !cells[index(i,j)].isLive) {
                 cells[n].isLive = true;
                 cells[n].mustbirth = false;
+                birthsCounter ++;
+                wasSomeoneBirth = true;
             }
         }
     }
@@ -222,6 +247,7 @@ function gameUpdate() {
         }
     }
 
+    population = 0;
     for ( i =0; i < maxColumn; i++) {
         for ( j = 0; j < maxRow; j++) {
             var counter = 0;
@@ -236,15 +262,20 @@ function gameUpdate() {
             if ( cells[index(rightOf(i),    downOf(j))  ].isLive === true   ) counter ++;
 
             n = index(i,j);
-            if (counter == 3)
+            if (counter == 3) {
                 cells[n].mustbirth = true;
-            else if (counter > 3 || counter < 2)
+            }
+            else if (counter > 3 || counter < 2) {
                 cells[n].mustdie = true;
+            }
 
+            if ( cells[index(i,j)  ].isLive === true )
+                population++;
 
         }
     }
 
-
+    if(wasSomeoneBirth)
+        generationsCounter ++;
 
 }
