@@ -10,3 +10,5 @@ Name=Game of Life
 # Remember to comment out the following line, if you do not want to use
 # a different app name in German locale (de).
 Name[de]=harbour-gameoflife
+Name[cn]=生存游戏
+Name[zn]=生存游戏

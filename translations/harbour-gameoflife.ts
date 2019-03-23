@@ -4,6 +4,7 @@
 <context>
     <name>CoverPage</name>
     <message>
+        <location filename="../qml/cover/CoverPage.qml" line="8"/>
         <source>Game of Life</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11,47 +12,57 @@
 <context>
     <name>FirstPage</name>
     <message>
-        <source>Speed -</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Speed +</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Random</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stop/Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Area +</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Area -</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="44"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qml/pages/FirstPage.qml" line="54"/>
+        <source>Random</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="70"/>
         <source>Start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="79"/>
+        <source>Stop/Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="96"/>
+        <source>Speed +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="109"/>
+        <source>Speed -</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="128"/>
+        <source>Area +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../qml/pages/FirstPage.qml" line="141"/>
+        <source>Area -</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>SecondPage</name>
     <message>
+        <location filename="../qml/pages/SecondPage.qml" line="15"/>
         <source>Nested Page</source>
-        <translation>Unterseite</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../qml/pages/SecondPage.qml" line="22"/>
         <source>Item</source>
-        <translation>Element</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
