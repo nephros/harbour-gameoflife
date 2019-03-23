@@ -5,53 +5,53 @@
     <name>CoverPage</name>
     <message>
         <source>Game of Life</source>
-        <translation type="unfinished"></translation>
+        <translation>生存游戏</translation>
     </message>
 </context>
 <context>
     <name>FirstPage</name>
     <message>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>开始</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
     <message>
         <source>Speed -</source>
-        <translation type="unfinished"></translation>
+        <translation>慢速</translation>
     </message>
     <message>
         <source>Speed +</source>
-        <translation type="unfinished"></translation>
+        <translation>快速</translation>
     </message>
     <message>
         <source>Random</source>
-        <translation type="unfinished"></translation>
+        <translation>随机</translation>
     </message>
     <message>
         <source>Stop/Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>停止／编辑</translation>
     </message>
     <message>
         <source>Area +</source>
-        <translation type="unfinished"></translation>
+        <translation>大区域</translation>
     </message>
     <message>
         <source>Area -</source>
-        <translation type="unfinished"></translation>
+        <translation>小区域</translation>
     </message>
 </context>
 <context>
     <name>SecondPage</name>
     <message>
         <source>Nested Page</source>
-        <translation type="unfinished"></translation>
+        <translation>嵌套页</translation>
     </message>
     <message>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation>项目</translation>
     </message>
 </context>
 </TS>
