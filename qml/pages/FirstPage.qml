@@ -159,6 +159,8 @@ Page {
             }
 
             Component.onCompleted: {
+                // set up
+                Game.blockSize       = Theme.paddingLarge
                 Game.blockColorFill  = Theme.rgba(Theme.primaryColor,1);
                 Game.blockColorDead  = Qt.darker(Theme.presenceColor(Theme.PresenceBusy))
                 Game.blockColorAlive = Theme.secondaryHighlightColor
