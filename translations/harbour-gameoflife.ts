@@ -52,17 +52,4 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
-<context>
-    <name>SecondPage</name>
-    <message>
-        <location filename="../qml/pages/SecondPage.qml" line="15"/>
-        <source>Nested Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../qml/pages/SecondPage.qml" line="22"/>
-        <source>Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
 </TS>

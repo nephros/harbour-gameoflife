@@ -19,7 +19,6 @@ SOURCES += src/harbour-gameoflife.cpp
 DISTFILES += qml/harbour-gameoflife.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    qml/pages/SecondPage.qml \
     rpm/harbour-gameoflife.changes.in \
     rpm/harbour-gameoflife.changes.run.in \
     rpm/harbour-gameoflife.spec \
