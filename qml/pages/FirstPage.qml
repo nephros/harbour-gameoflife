@@ -161,6 +161,10 @@ Page {
             height: parent.height - gridButtons.height - gridButtons.spacing
             width: parent.width
 
+            renderStrategy: Canvas.Threaded
+            // causes stutter/speedup issues
+            //renderTarget: Canvas.FramebufferObject
+
             onPaint:  {
                 var ctx = getContext("2d");
                 ctx.reset();
@@ -213,16 +217,6 @@ Page {
                 canvas.requestPaint()
             }
         }
-
-        BusyIndicator {
-            size: BusyIndicatorSize.Medium
-            anchors.bottom:   parent.bottom
-            anchors.bottomMargin: Theme.paddingMedium
-            x: Theme.paddingMedium
-            running:  timer.running
-        }
-
-
 
 
     }
