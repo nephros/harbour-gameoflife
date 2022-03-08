@@ -22,6 +22,10 @@ var birthsCounter = 0
 var deathsCounter = 0
 var population = 0
 
+var blockColorFill = Qt.rgba(1,1,1,1);
+var blockColorAlive = Qt.rgba(0,1,0,0.25);
+var blockColorDead = Qt.rgba(1,0.5,0.5,1);
+
 function Cell(i_, j_) {
     this.isLive = false;
     this.mustdie = false;
@@ -162,38 +166,19 @@ function gameDraw(ctx, width, height) {
 
             if(cells[n] instanceof Cell) {
                 if ( cells[n].isLive === true ) {
-                    ctx.fillStyle =  Qt.rgba(1,1,1,1) ;
+                    ctx.fillStyle = blockColorFill;
                     ctx.fillRect(rectX ,rectY, blockSize-1, blockSize-1);
                     if(cells[n].mustdie) {
-                        ctx.fillStyle = Qt.rgba(1,0.5,0.5,1);
+                        ctx.fillStyle = blockColorDead;
                         ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
                     }
-
-
-                }
-                else if ( cells[n].mustbirth === true ) {
-                    ctx.fillStyle = Qt.rgba(0,1,0,0.25);
+                } else if ( cells[n].mustbirth === true ) {
+                    ctx.fillStyle = blockColorAlive;
                     ctx.fillRect(rectX +  blockSize*0.25 ,rectY  +  blockSize*0.25, blockSize*0.5, blockSize*0.5);
                 }
-
-
             }
         }
     }
-
-
-    ctx.font = "bold 20px sans-serif";
-
-    ctx.fillStyle = "#fff";
-    ctx.fillText("generation: ", 10, 20);    ctx.fillText("" + generationsCounter, 180, 20);
-    ctx.fillText("population: ", 10, 40);    ctx.fillText("" + population, 180, 40);
-
-
-    ctx.fillStyle = "#00ff00";
-    ctx.fillText("births count: ", width - 290, 20);      ctx.fillText("" + birthsCounter, width - 100, 20);
-    ctx.fillStyle = "#ff0000";
-    ctx.fillText("deaths count: ", width - 290, 40);      ctx.fillText("" + deathsCounter, width - 100, 40);
-
 }
 
 function changeCell(n, m) {
@@ -228,7 +213,6 @@ function gameUpdate() {
                 cells[n].isLive = false;
                 cells[n].mustdie = false;
                 deathsCounter ++;
-
             }
             if (cells[n].mustbirth && !cells[index(i,j)].isLive) {
                 cells[n].isLive = true;

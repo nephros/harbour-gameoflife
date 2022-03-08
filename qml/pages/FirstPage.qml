@@ -54,18 +54,17 @@ Page {
     // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaFlickable { id: flick
         anchors.fill: parent
+        anchors.centerIn: parent
 
         Row  { id: gridButtons
             anchors.horizontalCenter: parent.horizontalCenter
-            //width: parent.width
+            anchors.top: parent.top
             height: butSpeedUp.height
-            spacing: Theme.paddingLarge
+            spacing: page.isPortrait ? Theme.paddingLarge : Theme.itemSizeMedium
             z: canvas.z+1
-            IconButton {
-                id: butSpeedDown
+            IconButton { id: butSpeedDown
                 icon.source: "image://theme/icon-m-enter-accept"
                 rotation: 180
-                //preferredWidth: Theme.buttonWidthExtraSmall
                 onClicked: {
                     if(Game.Inited) {
                         timer.interval *=2;
@@ -74,10 +73,8 @@ Page {
                     }
                 }
             }
-            IconButton {
-                id: butSpeedUp
+            IconButton { id: butSpeedUp
                 icon.source: "image://theme/icon-m-enter-accept"
-                //preferredWidth: Theme.buttonWidthExtraSmall
                 onClicked: {
                     if(Game.Inited) {
                         timer.interval /=2;
@@ -87,10 +84,8 @@ Page {
                     }
                 }
             }
-            IconButton {
-                id: butAreaDown
+            IconButton { id: butAreaDown
                 icon.source: "image://theme/icon-m-add-to-grid"
-                //preferredWidth: Theme.buttonWidthExtraSmall
                 onClicked: {
                     Game.blockSize *= 1.5
                     if(Game.blockSize > 50)
@@ -100,12 +95,10 @@ Page {
                     canvas.requestPaint()
                 }
             }
-            IconButton {
-                id: butAreaUp
+            IconButton { id: butAreaUp
                 icon.source: "image://theme/icon-m-add-to-grid"
                 icon.width: Theme.iconSizeSmall
                 icon.height: Theme.iconSizeSmall
-                //preferredWidth: Theme.buttonWidthExtraSmall
                 onClicked: {
                     Game.blockSize /= 1.5
                     if(Game.blockSize < 10)
@@ -116,14 +109,14 @@ Page {
                 }
             }
 
-
         }
 
         Canvas {
             id: canvas
             anchors.top: gridButtons.bottom
+            anchors.bottom: statusLine.top
             anchors.horizontalCenter: parent.horizontalCenter
-            height: parent.height - gridButtons.height - gridButtons.spacing
+            //height: parent.height - gridButtons.height - statusLine.height
             width: parent.width
 
             // portrait/landscape change:
@@ -148,8 +141,7 @@ Page {
                     Game.gameDraw(ctx, width, height)
                 }
             }
-            MouseArea {
-                id:area
+            MouseArea { id: area
                 anchors.fill: parent
                 onClicked: {
 
@@ -167,22 +159,51 @@ Page {
             }
 
             Component.onCompleted: {
+                Game.blockColorFill  = Theme.rgba(Theme.primaryColor,1);
+                Game.blockColorDead  = Qt.darker(Theme.presenceColor(Theme.PresenceBusy))
+                Game.blockColorAlive = Theme.secondaryHighlightColor
+
                 canvas.requestPaint()
                 Game.createCells()
                 Game.reInitArea( width, height )
             }
-
-
         }
 
-        Timer {
-            id:timer
+        Item { id: statusLine
+            width: parent.width - Theme.horizontalPageMargin
+            height: grid1.height
+            anchors.bottom: parent.bottom
+            property int gen
+            property int pop
+            property int deaths
+            property int births
+            Grid { id: grid1
+                rows: 2; columns: 2
+                anchors.left: parent.left
+                Label {text: "generation: "} Label {text: statusLine.gen}
+                Label {text: "population: "} Label {text: statusLine.pop}
+            }
+            Grid {
+                rows: 2; columns: 2
+                anchors.right: parent.right
+                Label {text: "births: "} Label {text: statusLine.births}
+                Label {text: "deaths: "} Label {text: statusLine.deaths}
+            }
+        }
+
+        Timer { id: timer
             repeat: true
             running: false
             interval:  200
             onTriggered: {
-                Game.gameUpdate()
-                canvas.requestPaint()
+                Game.gameUpdate();
+                if (Game.population === 0)
+                    stop();
+                canvas.requestPaint();
+                statusLine.gen = Game.generationsCounter;
+                statusLine.pop = Game.population;
+                statusLine.deaths = Game.deathsCounter;
+                statusLine.births = Game.birthsCounter;
             }
         }
 
