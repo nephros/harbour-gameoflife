@@ -18,142 +18,107 @@ Page {
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.Portrait
 
+    PullDownMenu { id: menu
+        flickable: flick
+        MenuItem { id: butClear
+            text: qsTr("Clear")
+            onClicked:  {
+                if(Game.Inited) {
+                    Game.clear()
+                    canvas.requestPaint()
+                }
+            }
+        }
+        MenuItem {
+            text: qsTr("Random")
+            onClicked:  {
+                if(Game.Inited) {
+                    Game.clear()
+                    Game.initRandom()
+                    canvas.requestPaint()
+                }
+            }
+        }
+        MenuItem {
+            text: timer.running ? qsTr("Stop/Edit") : qsTr("Start")
+            onClicked: {
+                if(Game.Inited) {
+                    timer.start()
+                } else {
+                    timer.stop();
+                    canvas.requestPaint();
+                }
+            }
+        }
+    }
+
     // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
+    SilicaFlickable { id: flick
         anchors.fill: parent
 
-        // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
-
-
-
-        Grid  {
-            id: gridButtons
-            width: parent.width
-            height: butClear.height * 2
-            columns: 4
-            spacing: 2
+        Row  { id: gridButtons
+            anchors.horizontalCenter: parent.horizontalCenter
+            //width: parent.width
+            height: butSpeedUp.height
+            spacing: Theme.paddingLarge
             z: canvas.z+1
-
-            Column {
-                width: (parent.width/gridButtons.columns) - gridButtons.spacing
-                height: butClear.height * 2
-                spacing: 2
-                Button {
-                    id: butClear
-                    width:  parent.width
-                    text: qsTr("Clear")
-                    onClicked:  {
-                        if(Game.Inited) {
-                            Game.clear()
-                            canvas.requestPaint()
-                        }
-                    }
-                }
-                Button {
-                    width:  parent.width
-                    text: qsTr("Random")
-                    onClicked:  {
-                        if(Game.Inited) {
-                            Game.clear()
-                            Game.initRandom()
-                            canvas.requestPaint()
-                        }
+            IconButton {
+                id: butSpeedDown
+                icon.source: "image://theme/icon-m-enter-accept"
+                rotation: 180
+                //preferredWidth: Theme.buttonWidthExtraSmall
+                onClicked: {
+                    if(Game.Inited) {
+                        timer.interval *=2;
+                        if(timer.interval > 4000)
+                            timer.interval = 4000;
                     }
                 }
             }
-            Column {
-                width: (parent.width/gridButtons.columns) - gridButtons.spacing
-                height: butClear.height * 2
-                spacing: 2
-                Button {
-                    width:   parent.width
-                    text: qsTr("Start")
-                    onClicked: {
-                        if(Game.Inited)
-                            timer.start()
-                    }
-                }
-                Button {
-                    id: butStop
-                    width:  parent.width
-                    text: qsTr("Stop/Edit")
-                    onClicked: {
-                        if(Game.Inited) {
-                            timer.stop();
-                            canvas.requestPaint();
-                        }
+            IconButton {
+                id: butSpeedUp
+                icon.source: "image://theme/icon-m-enter-accept"
+                //preferredWidth: Theme.buttonWidthExtraSmall
+                onClicked: {
+                    if(Game.Inited) {
+                        timer.interval /=2;
+                        if(timer.interval < 10)
+                            timer.interval = 10;
+
                     }
                 }
             }
+            IconButton {
+                id: butAreaDown
+                icon.source: "image://theme/icon-m-add-to-grid"
+                //preferredWidth: Theme.buttonWidthExtraSmall
+                onClicked: {
+                    Game.blockSize *= 1.5
+                    if(Game.blockSize > 50)
+                        Game.blockSize = 50;
 
-            Column {
-                width: (parent.width/gridButtons.columns) - gridButtons.spacing
-                height: butClear.height * 2
-                spacing: 2
-                Button {
-                    id: butSpeedUp
-                    width:  parent.width
-                    text: qsTr("Speed +")
-                    onClicked: {
-                        if(Game.Inited) {
-                            timer.interval /=2;
-                            if(timer.interval < 10)
-                                timer.interval = 10;
-
-                        }
-                    }
-                }
-                Button {
-                    id: butSpeedDown
-                    width:   parent.width
-                    text: qsTr("Speed -")
-                    onClicked: {
-                        if(Game.Inited) {
-                            timer.interval *=2;
-                            if(timer.interval > 4000)
-                                timer.interval = 4000;
-                        }
-                    }
-                }
-
-            }
-
-            Column {
-                width: (parent.width/gridButtons.columns) - gridButtons.spacing
-                height: butClear.height * 2
-                spacing: 2
-                Button {
-                    id: butAreaUp
-                    width:   parent.width
-                    text: qsTr("Area +")
-                    onClicked: {
-                        Game.blockSize /= 1.5
-                        if(Game.blockSize < 10)
-                            Game.blockSize = 10;
-
-                        Game.reInitArea( canvas.width, canvas.height )
-                        canvas.requestPaint()
-                    }
-                }
-                Button {
-                    id: butAreaDown
-                    width:  parent.width
-                    text: qsTr("Area -")
-                    onClicked: {
-                        Game.blockSize *= 1.5
-                        if(Game.blockSize > 50)
-                            Game.blockSize = 50;
-
-                        Game.reInitArea( canvas.width, canvas.height )
-                        canvas.requestPaint()
-                    }
+                    Game.reInitArea( canvas.width, canvas.height )
+                    canvas.requestPaint()
                 }
             }
+            IconButton {
+                id: butAreaUp
+                icon.source: "image://theme/icon-m-add-to-grid"
+                icon.width: Theme.iconSizeSmall
+                icon.height: Theme.iconSizeSmall
+                //preferredWidth: Theme.buttonWidthExtraSmall
+                onClicked: {
+                    Game.blockSize /= 1.5
+                    if(Game.blockSize < 10)
+                        Game.blockSize = 10;
+
+                    Game.reInitArea( canvas.width, canvas.height )
+                    canvas.requestPaint()
+                }
+            }
+
 
         }
-
-
-
 
         Canvas {
             id:canvas
