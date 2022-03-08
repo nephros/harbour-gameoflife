@@ -15,8 +15,7 @@ Page {
         saveAs(blob, filename+".txt");
     }
 
-    // The effective value will be restricted by ApplicationWindow.allowedOrientations
-    allowedOrientations: Orientation.Portrait
+    allowedOrientations: Orientation.All
 
     // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaFlickable {
@@ -156,10 +155,14 @@ Page {
 
 
         Canvas {
-            id:canvas
-            y:  gridButtons.height + gridButtons.spacing * 2
+            id: canvas
+            anchors.top: gridButtons.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
             height: parent.height - gridButtons.height - gridButtons.spacing
             width: parent.width
+
+            // portrait/landscape change:
+            onWidthChanged: timer.running ? Game.reInitArea( width, height ) : true
 
             onPaint:  {
                 var ctx = getContext("2d");
